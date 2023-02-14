@@ -1,9 +1,6 @@
-'use client';
-
-import { SessionProvider } from 'next-auth/react';
-import { ChakraProvider } from '@chakra-ui/react';
+import AuthContext from '../Context/AuthContext';
 import './globals.css';
-import { theme } from '@/chakra/theme';
+import ChakraContext from '@/Context/ChakraContext';
 
 export default function RootLayout({
   children,
@@ -19,9 +16,9 @@ export default function RootLayout({
       <head />
 
       <body>
-        <SessionProvider>
-          <ChakraProvider theme={theme}>{children}</ChakraProvider>
-        </SessionProvider>
+        <AuthContext>
+          <ChakraContext>{children}</ChakraContext>
+        </AuthContext>
       </body>
     </html>
   );
