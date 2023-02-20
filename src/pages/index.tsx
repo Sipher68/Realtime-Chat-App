@@ -1,12 +1,9 @@
-'use client';
-
 import { Inter } from '@next/font/google';
-import { NextPageContext } from 'next';
-import { getSession, signIn, signOut, useSession } from 'next-auth/react';
-
+import { NextPage, NextPageContext } from 'next';
+import { signIn, signOut, useSession, getSession } from 'next-auth/react';
 const inter = Inter({ subsets: ['latin'] });
 
-export default function Home() {
+const Home: NextPage = () => {
   const { data } = useSession();
 
   console.log('Here is Data', data);
@@ -18,11 +15,10 @@ export default function Home() {
       ) : (
         <button onClick={() => signIn('google')}>Sign In</button>
       )}
-
       {data?.user?.name}
     </div>
   );
-}
+};
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context);
@@ -33,3 +29,5 @@ export async function getServerSideProps(context: NextPageContext) {
     },
   };
 }
+
+export default Home;
