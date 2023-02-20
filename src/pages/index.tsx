@@ -1,23 +1,17 @@
+import Auth from '@/components/Auth';
+import Chat from '@/components/Chat';
+import { Box } from '@chakra-ui/react';
 import { Inter } from '@next/font/google';
 import { NextPage, NextPageContext } from 'next';
-import { signIn, signOut, useSession, getSession } from 'next-auth/react';
-const inter = Inter({ subsets: ['latin'] });
+import { getSession, useSession } from 'next-auth/react';
+import { Session } from 'next-auth';
 
 const Home: NextPage = () => {
   const { data } = useSession();
 
   console.log('Here is Data', data);
 
-  return (
-    <div>
-      {data?.user ? (
-        <button onClick={() => signOut()}>Sign Out</button>
-      ) : (
-        <button onClick={() => signIn('google')}>Sign In</button>
-      )}
-      {data?.user?.name}
-    </div>
-  );
+  return <Box>{data?.user ? <Chat /> : <Auth />}</Box>;
 };
 
 export async function getServerSideProps(context: NextPageContext) {
