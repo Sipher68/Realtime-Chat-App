@@ -7,11 +7,21 @@ import { getSession, useSession } from 'next-auth/react';
 import { Session } from 'next-auth';
 
 const Home: NextPage = () => {
-  const { data } = useSession();
+  const { data: session } = useSession();
 
-  console.log('Here is Data', data);
+  console.log('Here is Session', session);
 
-  return <Box>{data?.user ? <Chat /> : <Auth />}</Box>;
+  const reloadSession = () => {};
+
+  return (
+    <Box>
+      {session?.user.username ? (
+        <Chat />
+      ) : (
+        <Auth session={session} reloadSession={reloadSession} />
+      )}
+    </Box>
+  );
 };
 
 export async function getServerSideProps(context: NextPageContext) {
