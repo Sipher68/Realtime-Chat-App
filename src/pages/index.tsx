@@ -1,7 +1,6 @@
 import Auth from '@/components/Auth';
 import Chat from '@/components/Chat';
 import { Box } from '@chakra-ui/react';
-import { Inter } from '@next/font/google';
 import { NextPage, NextPageContext } from 'next';
 import { getSession, useSession } from 'next-auth/react';
 import { Session } from 'next-auth';
