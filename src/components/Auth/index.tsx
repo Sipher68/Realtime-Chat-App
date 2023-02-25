@@ -3,9 +3,10 @@ import { Button, Center, Stack, Text, Image, Input } from '@chakra-ui/react';
 import { Session } from 'next-auth';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
+import { CreateUsernameData, CreateUsernameVariable } from '../../util/types';
 import UserOperations from '../../graphql/operations/user';
 
-interface IAuthProps {
+export interface IAuthProps {
   session: Session | null;
   reloadSession: () => void;
 }
@@ -16,11 +17,15 @@ const Auth: React.FunctionComponent<IAuthProps> = ({
 }) => {
   const [username, setUsername] = useState('');
 
-  const [createUsername, { data, loading, error }] = useMutation(
-    UserOperations.Mutations.createUsername
-  );
+  const [createUsername, { data, loading, error }] = useMutation<
+    CreateUsernameData,
+    CreateUsernameVariable
+  >(UserOperations.Mutations.createUsername);
+
+  console.log('HERE IS DATA', data, loading, error);
 
   const onSubmit = async () => {
+    if (!username) return;
     try {
       await createUsername({ variables: { username } });
     } catch (error) {
