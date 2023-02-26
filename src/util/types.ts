@@ -6,5 +6,18 @@ export interface CreateUsernameData {
 }
 
 export interface CreateUsernameVariable {
-  username: String;
+  username: string;
+}
+
+export interface SearchUsersInput {
+  username: string;
+}
+
+export interface SearchUsersData {
+  searchUsers: Array<SearchedUser>;
+}
+
+export interface SearchedUser {
+  id: string;
+  username: string;
 }
