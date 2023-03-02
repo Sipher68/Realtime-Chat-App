@@ -1,3 +1,6 @@
+// CAUSE OF ERROR
+import { ConversationPopulated } from '../../../backend/src/util/types';
+
 // users
 
 export interface CreateUsernameData {
@@ -25,6 +28,10 @@ export interface SearchedUser {
 }
 
 // Conversation
+export interface ConversationsData {
+  conversation: Array<ConversationPopulated>;
+}
+
 export interface CreateConversationData {
   createConversation: {
     conversationId: string;
