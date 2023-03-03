@@ -16,16 +16,18 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({
     data: conversationsData,
     error: conversationsError,
     loading: conversationsLoading,
-  } = useQuery<ConversationsData, null>(
-    ConversationOperations.Queries.conversations
-  );
+    subscribeToMore,
+  } = useQuery<ConversationsData>(ConversationOperations.Queries.conversations);
 
-  console.log('here is data', conversationsData);
+  console.log('here is conversationsData', conversationsData);
 
   return (
     <Box width={{ base: '100%', md: '400px' }} bg="whiteAlpha.50" py={6} px={3}>
       {/* Skeleton Loader */}
-      <ConversationList session={session} />
+      <ConversationList
+        session={session}
+        conversations={conversationsData?.conversations || []}
+      />
     </Box>
   );
 };

@@ -29,7 +29,7 @@ export interface SearchedUser {
 
 // Conversation
 export interface ConversationsData {
-  conversation: Array<ConversationPopulated>;
+  conversations: Array<ConversationPopulated>;
 }
 
 export interface CreateConversationData {
