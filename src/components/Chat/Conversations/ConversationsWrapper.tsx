@@ -6,6 +6,7 @@ import { useQuery } from '@apollo/client';
 import { ConversationsData } from '@/util/types';
 import { ConversationPopulated } from '../../../../../backend/src/util/types';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 interface ConversationsWrapperProps {
   session: Session;
@@ -21,7 +22,17 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({
     subscribeToMore,
   } = useQuery<ConversationsData>(ConversationOperations.Queries.conversations);
 
-  console.log('query data', conversationsData);
+  const router = useRouter();
+  const {
+    query: { conversationId },
+  } = router;
+
+  const onViewConversation = async (conversationId: string) => {
+    // 1. Push the new conversationId to the router query params
+    router.push({ query: { conversationId } });
+
+    // 2. Mark the conversation as read
+  };
 
   const subscribeToNewConversations = () => {
     subscribeToMore({
@@ -38,8 +49,6 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({
       ) => {
         if (!subscriptionData.data) return prev;
 
-        console.log('subscription data', subscriptionData);
-
         const newConversation = subscriptionData.data.conversationCreated;
 
         return Object.assign({}, prev, {
@@ -55,11 +64,18 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({
   }, []);
 
   return (
-    <Box width={{ base: '100%', md: '400px' }} bg="whiteAlpha.50" py={6} px={3}>
+    <Box
+      display={{ base: conversationId ? 'none' : 'flex', md: 'flex' }}
+      width={{ base: '100%', md: '400px' }}
+      bg="whiteAlpha.50"
+      py={6}
+      px={3}
+    >
       {/* Skeleton Loader */}
       <ConversationList
         session={session}
         conversations={conversationsData?.conversations || []}
+        onViewConversation={onViewConversation}
       />
     </Box>
   );
