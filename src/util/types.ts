@@ -51,6 +51,12 @@ export interface ConversationUpdatedData {
   };
 }
 
+export interface ConversationDeletedData {
+  conversationDeleted: {
+    id: string;
+  };
+}
+
 // Messages
 export interface MessagesData {
   messages: Array<MessagePopulated>;

@@ -3,7 +3,11 @@ import { Session } from 'next-auth';
 import ConversationList from './ConversationList';
 import ConversationOperations from '../../../graphql/operations/conversation';
 import { gql, useMutation, useQuery, useSubscription } from '@apollo/client';
-import { ConversationsData, ConversationUpdatedData } from '@/util/types';
+import {
+  ConversationDeletedData,
+  ConversationsData,
+  ConversationUpdatedData,
+} from '@/util/types';
 import {
   ConversationPopulated,
   ParticipantPopulated,
@@ -60,6 +64,40 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({
         if (currentlyViewingConversation) {
           onViewConversation(conversationId, false);
         }
+      },
+    }
+  );
+
+  useSubscription<ConversationDeletedData>(
+    ConversationOperations.Subscriptions.conversationDeleted,
+    {
+      onData: ({ client, data }) => {
+        console.log('Here is sub data', data);
+        const { data: subscriptionData } = data;
+
+        if (!subscriptionData) return;
+
+        const existing = client.readQuery<ConversationsData>({
+          query: ConversationOperations.Queries.conversations,
+        });
+
+        if (!existing) return;
+
+        const { conversations } = existing;
+        const {
+          conversationDeleted: { id: deletedConversationId },
+        } = subscriptionData;
+
+        client.writeQuery<ConversationsData>({
+          query: ConversationOperations.Queries.conversations,
+          data: {
+            conversations: conversations.filter(
+              (conversation) => conversation.id !== deletedConversationId
+            ),
+          },
+        });
+
+        router.push('/');
       },
     }
   );
@@ -173,7 +211,7 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({
   return (
     <Box
       display={{ base: conversationId ? 'none' : 'flex', md: 'flex' }}
-      width={{ base: '100%', md: '400px' }}
+      width={{ base: '100%', md: '430px' }}
       flexDirection="column"
       gap={4}
       bg="whiteAlpha.50"
