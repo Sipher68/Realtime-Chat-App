@@ -9,7 +9,10 @@ import ConversationModal from './Modal/Modal';
 interface ConversationListProps {
   session: Session;
   conversations: Array<ConversationPopulated>;
-  onViewConversation: (conversationId: string) => void;
+  onViewConversation: (
+    conversationId: string,
+    hasSeenLatestMessage: boolean | undefined
+  ) => void;
 }
 
 const ConversationList: React.FC<ConversationListProps> = ({
@@ -26,6 +29,12 @@ const ConversationList: React.FC<ConversationListProps> = ({
   const {
     user: { id: userId },
   } = session;
+
+  const sortedConversation = [
+    ...conversations.sort(
+      (a, b) => b.updatedAt.valueOf() - a.updatedAt.valueOf()
+    ),
+  ];
 
   return (
     <Box width="100%">
@@ -44,15 +53,27 @@ const ConversationList: React.FC<ConversationListProps> = ({
       </Box>
       <ConversationModal session={session} isOpen={isOpen} onClose={onClose} />
 
-      {conversations.map((conversation) => (
-        <ConversationItem
-          key={conversation.id}
-          userId={userId}
-          conversation={conversation}
-          onClick={() => onViewConversation(conversation.id)}
-          isSelected={conversation.id === router.query.conversationId}
-        />
-      ))}
+      {sortedConversation.map((conversation) => {
+        const participant = conversation.participants.find(
+          (p) => p.user.id === userId
+        );
+
+        return (
+          <ConversationItem
+            key={conversation.id}
+            userId={userId}
+            conversation={conversation}
+            onClick={() =>
+              onViewConversation(
+                conversation.id,
+                participant?.hasSeenLatestMessage
+              )
+            }
+            hasSeenLatestMessage={participant?.hasSeenLatestMessage}
+            isSelected={conversation.id === router.query.conversationId}
+          />
+        );
+      })}
     </Box>
   );
 };
